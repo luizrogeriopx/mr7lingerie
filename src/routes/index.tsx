@@ -5,7 +5,6 @@ import { Search, X, Sparkles } from "lucide-react";
 
 import { SiteShell } from "@/components/site-shell";
 import {
-  attributesQuery,
   formatPrice,
   productsQuery,
   siteSettingsQuery,
@@ -97,10 +96,8 @@ function ProductCard({ product }: { product: Product }) {
 function CatalogPage() {
   const { data: settings } = useQuery(siteSettingsQuery);
   const { data: products, isLoading } = useQuery(productsQuery());
-  const { data: attributes } = useQuery(attributesQuery);
   const [term, setTerm] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [valueFilter, setValueFilter] = useState<string | null>(null);
 
   const categories = useMemo(
     () =>
@@ -110,12 +107,11 @@ function CatalogPage() {
     [products],
   );
 
-  const hasActiveFilters = Boolean(term || category || valueFilter);
+  const hasActiveFilters = Boolean(term || category);
 
   const clearFilters = () => {
     setTerm("");
     setCategory(null);
-    setValueFilter(null);
   };
 
   const filtered = useMemo(() => {
@@ -127,12 +123,9 @@ function CatalogPage() {
         (p.description ?? "").toLowerCase().includes(t) ||
         (p.category ?? "").toLowerCase().includes(t);
       const matchCat = !category || p.category === category;
-      const matchValue =
-        !valueFilter ||
-        (p.product_attribute_values ?? []).some((v) => v.attribute_value_id === valueFilter);
-      return matchTerm && matchCat && matchValue;
+      return matchTerm && matchCat;
     });
-  }, [products, term, category, valueFilter]);
+  }, [products, term, category]);
 
   return (
     <SiteShell>
@@ -212,44 +205,6 @@ function CatalogPage() {
                 >
                   {c}
                 </Button>
-              ))}
-            </div>
-          )}
-
-          {/* FILTRO POR ATRIBUTOS (TAMANHO, COR, NÚMERO) */}
-          {(attributes ?? []).length > 0 && (
-            <div className="flex flex-col gap-2.5 pt-1">
-              {(attributes ?? []).map((attr) => (
-                <div key={attr.id} className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground min-w-[65px]">
-                    {attr.name}:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {attr.attribute_values.map((v) => {
-                      const isActive = valueFilter === v.id;
-                      return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          onClick={() => setValueFilter(isActive ? null : v.id)}
-                          className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-all ${
-                            isActive
-                              ? "border-primary bg-primary text-primary-foreground font-semibold shadow-sm"
-                              : "border-border bg-card/60 text-muted-foreground hover:border-primary/60 hover:text-foreground"
-                          }`}
-                        >
-                          {v.color_hex && (
-                            <span
-                              className="h-2.5 w-2.5 rounded-full border border-border"
-                              style={{ backgroundColor: v.color_hex }}
-                            />
-                          )}
-                          {v.value}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
               ))}
             </div>
           )}
