@@ -1,6 +1,6 @@
 # Mr7 Lingerie
 
-Um sistema pra catalogo virtual, onde seja possivel o administrador cadastrar seus produtos, deve se ter as opções de cadastrar, Titulo, Descrição, Fotos por upload, Preço, Estoque e lista de Atributos Cor, Numero, Tamanho(P, M,  G. GG EG, EXG) pre deficidos no sistema más com possibilidade de criar outros e até editar esses, 
+Um sistema pra catalogo virtual, onde seja possivel o administrador cadastrar seus produtos, deve se ter as opções de cadastrar, Titulo, Descrição, Fotos por upload, Preço, Estoque e lista de Atributos Cor, Numero, Tamanho(P, M, G. GG EG, EXG) pre deficidos no sistema más com possibilidade de criar outros e até editar esses,
 
 Admin recebe painel de controle pra cadastro, edição e alteração dos produtos e logo e informações do site.
 

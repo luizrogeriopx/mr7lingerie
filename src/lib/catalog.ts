@@ -72,11 +72,7 @@ export function slugify(input: string) {
 export const siteSettingsQuery = {
   queryKey: ["site-settings"],
   queryFn: async (): Promise<SiteSettings> => {
-    const { data, error } = await supabase
-      .from("site_settings")
-      .select("*")
-      .limit(1)
-      .maybeSingle();
+    const { data, error } = await supabase.from("site_settings").select("*").limit(1).maybeSingle();
     if (error) throw error;
     return (data ?? {
       id: true,
@@ -168,6 +164,52 @@ export async function removeCatalogImage(path: string | null) {
   await supabase.storage.from("catalog").remove([path]);
 }
 
+export type OrderItem = {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  title: string;
+  options: string | null;
+  unit_price: number;
+  quantity: number;
+};
+
+export type Order = {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  note: string | null;
+  total: number;
+  status: string;
+  created_at: string;
+  order_items: OrderItem[];
+};
+
+export const ordersQuery = {
+  queryKey: ["orders"],
+  queryFn: async (): Promise<Order[]> => {
+    const { data, error } = await supabase
+      .from("orders")
+      .select(
+        "id,customer_name,customer_phone,note,total,status,created_at,order_items(id,order_id,product_id,title,options,unit_price,quantity)",
+      )
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as unknown as Order[];
+  },
+};
+
 export function sortedImages(product: Pick<Product, "product_images">) {
   return [...(product.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+}
+
+export function cleanPhone(phone: string) {
+  return phone.replace(/\D/g, "");
+}
+
+export function formatWhatsappUrl(phone: string, text: string) {
+  const digits = cleanPhone(phone);
+  // If no country code and has 10 or 11 digits (Brazil DDD + number), prepend 55
+  const fullPhone = digits.length === 10 || digits.length === 11 ? `55${digits}` : digits;
+  return `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(text)}`;
 }
