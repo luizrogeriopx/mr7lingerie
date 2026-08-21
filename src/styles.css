@@ -142,3 +142,37 @@
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
+
+/*
+ * Mascara visualmente qualquer elemento, badge ou watermark do Lovable sem remover integrações
+ */
+#lovable-badge,
+.lovable-badge,
+[data-lovable-badge],
+[data-lovable],
+[class*="lovable-badge"],
+[id*="lovable-badge"],
+[class*="lovable-tag"],
+[id*="lovable-tag"],
+[class*="lovable-edit"],
+[id*="lovable-edit"],
+#lovable-edit-button,
+.lovable-edit-button,
+a[href*="lovable.dev"],
+a[href*="lovable.app"][class*="badge"],
+[data-component-name="LovableBadge"],
+div:has(> a[href*="lovable.dev"]),
+div:has(> a[href*="lovable.app"]) {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  max-height: 0 !important;
+  max-width: 0 !important;
+  position: absolute !important;
+  bottom: -9999px !important;
+  right: -9999px !important;
+  z-index: -9999 !important;
+}
