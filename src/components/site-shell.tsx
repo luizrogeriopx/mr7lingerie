@@ -1,38 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Menu, ShoppingBag, X, MessageCircle, Instagram, Mail, MapPin } from "lucide-react";
-import { useState } from "react";
+import { ShoppingBag, MessageCircle, Instagram, Mail, MapPin } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { siteSettingsQuery, formatWhatsappUrl } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-  return (
-    <>
-      <Link
-        to="/"
-        onClick={onNavigate}
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Catálogo
-      </Link>
-      <Link
-        to="/carrinho"
-        onClick={onNavigate}
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Carrinho
-      </Link>
-    </>
-  );
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const { data: settings } = useQuery(siteSettingsQuery);
   const { count } = useCart();
-  const [open, setOpen] = useState(false);
 
   const cleanInsta = (settings?.instagram ?? "").replace(/^@/, "").trim();
 
@@ -40,6 +17,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          {/* LOGO E NOME DA LOJA */}
           <Link to="/" className="flex min-w-0 items-center gap-3 group">
             {settings?.logo_url ? (
               <img
@@ -59,15 +37,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
           </Link>
 
-          <nav className="ml-auto hidden items-center gap-6 md:flex">
-            <NavLinks />
-          </nav>
+          {/* NAVEGAÇÃO E BOTÃO DO CARRINHO (SACOLA) */}
+          <div className="ml-auto flex items-center gap-3">
+            <Link
+              to="/"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary px-2 py-1"
+            >
+              Catálogo
+            </Link>
 
-          <div className="ml-auto flex items-center gap-2 md:ml-4">
             <Button asChild variant="outline" size="sm" className="relative h-9 px-3">
-              <Link to="/carrinho" className="flex items-center gap-2">
+              <Link to="/carrinho" className="flex items-center gap-2" aria-label="Abrir carrinho">
                 <ShoppingBag className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Carrinho</span>
+                <span className="hidden sm:inline text-xs font-semibold">Carrinho</span>
                 {count > 0 && (
                   <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-bold text-primary-foreground">
                     {count}
@@ -75,24 +57,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 )}
               </Link>
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              aria-label="Abrir menu"
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
           </div>
         </div>
-        {open && (
-          <div className="border-t border-border bg-card md:hidden">
-            <nav className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4">
-              <NavLinks onNavigate={() => setOpen(false)} />
-            </nav>
-          </div>
-        )}
       </header>
 
       <main className="flex-1">{children}</main>
