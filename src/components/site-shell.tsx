@@ -6,11 +6,9 @@ import type { ReactNode } from "react";
 
 import { siteSettingsQuery, formatWhatsappUrl } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
-import { useSession } from "@/hooks/use-session";
 import { Button } from "@/components/ui/button";
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-  const { session, isAdmin } = useSession();
   return (
     <>
       <Link
@@ -27,23 +25,6 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
       >
         Carrinho
       </Link>
-      {session && isAdmin ? (
-        <Link
-          to="/admin"
-          onClick={onNavigate}
-          className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
-        >
-          Painel Admin
-        </Link>
-      ) : (
-        <Link
-          to="/auth"
-          onClick={onNavigate}
-          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-        >
-          Área Admin
-        </Link>
-      )}
     </>
   );
 }
